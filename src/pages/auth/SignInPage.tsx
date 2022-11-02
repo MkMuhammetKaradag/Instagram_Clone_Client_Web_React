@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { login, User } from "../../context/Auth/authSlice";
+import { setUser, User } from "../../context/Auth/authSlice";
 import screenshot1 from "../../assest/screenshot1.png";
 import screenshot2 from "../../assest/screenshot2.png";
 import screenshot3 from "../../assest/screenshot3.png";
@@ -15,26 +15,37 @@ import TextField from "@mui/material/TextField";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { AiFillFacebook } from "react-icons/ai";
+import { getLogin } from "../../api";
+import toast from "react-hot-toast";
+import * as Yup from "yup";
+import { FormHelperText } from "@mui/material";
+import { withFormik, FormikProps, FormikErrors, Form, Field } from "formik";
+
 interface FormState {
-  userName: string;
-  password: string;
   showPassword: boolean;
 }
 
-const Login = () => {
-  // const authUser = useAppSelector((s) => s.auth.user);
-  // const dispatch = useAppDispatch();
-  // const [user, setUser] = useState<User | null>(null);
+// Shape of form values
+interface FormValues {
+  email: string;
+  password: string;
+}
+
+interface OtherProps {
+  message: string;
+}
+
+// Aside: You may see InjectedFormikProps<OtherProps, FormValues> instead of what comes below in older code.. InjectedFormikProps was artifact of when Formik only exported a HoC. It is also less flexible as it MUST wrap all props (it passes them through).
+const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
+  const { touched, errors, isSubmitting, message, values, handleChange } =
+    props;
+
+  const dispatch = useAppDispatch();
+
+  // console.log(isSubmitting);
   const [formValues, setFormValues] = React.useState<FormState>({
-    userName: "",
-    password: "",
     showPassword: false,
   });
-  const enable = formValues.password && formValues.userName;
-  const handleChange =
-    (prop: keyof FormState) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setFormValues({ ...formValues, [prop]: event.target.value });
-    };
 
   const handleClickShowPassword = () => {
     setFormValues({
@@ -48,19 +59,134 @@ const Login = () => {
   ) => {
     event.preventDefault();
   };
-  const ref = useRef<HTMLInputElement>(null);
-  // const userDeger = () => {
-  //   setUser({
-  //     _id: "deneme",
-  //     userNickName: "muhammet",
-  //     userProfilePicture: "budane",
-  //     email: "deneme@mail.com",
-  //   });
-  // };
-  // useEffect(() => {
-  //   console.log(userName);
-  // }, [password, userName]);
+  const handleSubmit = () => {
+    getLogin({
+      email: values.email,
+      password: values.password,
+    })
+      .then((user) => {
+        console.log(user.data.user);
+        if (user.data.user) {
+          dispatch(setUser(user.data.user));
+          toast.success("Successfully toasted!");
+        }
+      })
+      .catch((err) => {
+        toast.error("This didn't work.");
+      });
+  };
 
+  return (
+    <Form className="grid gap-y-1.5">
+      <TextField
+        className="bg-zinc-50"
+        fullWidth
+        inputProps={{
+          style: {
+            height: "15px",
+            alignItems: "center",
+          },
+        }}
+        error={touched.email && Boolean(errors.email)}
+        helperText={touched.email && errors.email}
+        id="outlined-textarea"
+        label="user name or email"
+        value={values.email}
+        onChange={handleChange}
+        name="email"
+      />
+
+      <FormControl
+        className="w-full bg-zinc-50"
+        sx={{ alignItems: "center" }}
+        variant="outlined"
+      >
+        <InputLabel
+          sx={[
+            { marginTop: "-3px", textAlign: "center", fontSize: 15 },
+            // Boolean(errors.password) && { color: "red" },
+          ]}
+          htmlFor="outlined-adornment-password"
+        >
+          Password
+        </InputLabel>
+        <OutlinedInput
+          fullWidth
+          inputProps={{
+            style: {
+              height: "30px",
+              alignItems: "center",
+            },
+          }}
+          size="small"
+          label="Password"
+          id="outlined-adornment-password"
+          type={formValues.showPassword ? "text" : "password"}
+          name="password"
+          error={touched.password && Boolean(errors.password)}
+          onChange={handleChange}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {formValues.showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+        {touched.password && errors.password && (
+          <FormHelperText error id="accountId-error">
+            {errors.password}
+          </FormHelperText>
+        )}
+      </FormControl>
+      <button
+        type="submit"
+        disabled={!values.email || !values.password}
+        className="h-[32px] rounded-sm font-semibold bg-brand text-white text-sm disabled:opacity-50"
+        onClick={handleSubmit}
+      >
+        Log In
+      </button>
+    </Form>
+  );
+};
+
+// The type of props MyForm receives
+interface MyFormProps {
+  initialEmail?: string;
+  initialPassword?: string;
+  message: string; // if this passed all the way through you might do this or make a union type
+}
+const SignInSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string()
+    .min(6, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+});
+// Wrap our form with the withFormik HoC
+const MyForm = withFormik<MyFormProps, FormValues>({
+  // Transform outer props into form values
+  mapPropsToValues: (props) => {
+    return {
+      email: props.initialEmail || "",
+      password: props.initialPassword || "",
+    };
+  },
+
+  validationSchema: SignInSchema,
+  handleSubmit: (values) => {},
+})(InnerForm);
+
+// Use <MyForm /> wherevs
+
+const SignInPage = () => {
+  const ref = useRef<HTMLInputElement>(null);
   useEffect(() => {
     let images = ref.current?.querySelectorAll("img"),
       total = images?.length || 0,
@@ -86,7 +212,6 @@ const Login = () => {
     return () => {
       clearInterval(interval);
     };
-    //console.log(ref.current?.querySelectorAll("img"));
   }, [ref]);
 
   return (
@@ -130,73 +255,8 @@ const Login = () => {
             />
           </div>
           <div className="grid gap-y-3">
-            <TextField
-              className="bg-zinc-50"
-              fullWidth
-              // size="small"
-              // style={{ height: "38px" }}
-              inputProps={{
-                style: {
-                  height: "15px",
-                  alignItems: "center",
-                  // textAlign: "center",
-                },
-              }}
-              id="outlined-textarea"
-              label="user name or email"
-              // placeholder="Placeholder"
-              value={formValues.userName}
-              onChange={handleChange("userName")}
-            />
-            <FormControl
-              className="w-full bg-zinc-50"
-              sx={{ alignItems: "center" }}
-              variant="outlined"
-            >
-              <InputLabel
-                sx={{ marginTop: "-3px", textAlign: "center", fontSize: 15 }}
-                htmlFor="outlined-adornment-password"
-              >
-                Password
-              </InputLabel>
-              <OutlinedInput
-                fullWidth
-                inputProps={{
-                  style: {
-                    height: "30px",
-                    alignItems: "center",
-                  },
-                }}
-                size="small"
-                label="Password"
-                id="outlined-adornment-password"
-                type={formValues.showPassword ? "text" : "password"}
-                value={formValues.password}
-                onChange={handleChange("password")}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {formValues.showPassword ? (
-                        <VisibilityOff />
-                      ) : (
-                        <Visibility />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-            <button
-              disabled={!enable}
-              className="h-[32px] rounded-sm font-semibold bg-brand text-white text-sm disabled:opacity-50"
-            >
-              Log In
-            </button>
+            <MyForm message="Sign In" />
+
             <div className="flex items-center my-3.5">
               <div className="h-px bg-gray-300 flex-1 "></div>
               <span className="px-4 text-xs font-semibold text-gray-600">
@@ -213,41 +273,6 @@ const Login = () => {
               Forgot password
             </div>
           </div>
-
-          {/* <form className="grid gap-y-1.5">
-          <label className="block relative ">
-            <input
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              required={true}
-              className="placeholder:italic placeholder:text-sm  bg-zinc-50  px-2 border rounded-sm w-full h-[38px] outline-none  focus:border-gray-400 "
-              placeholder="Phone number , username or email"
-            ></input>
-
-         
-          </label>
-          <label className="block relative ">
-            <input
-              type={"password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required={true}
-              className="placeholder:italic placeholder:text-sm  bg-zinc-50 h-[38px] px-2 border rounded-sm w-full  outline-none  focus:border-gray-400 "
-              placeholder="Password"
-            ></input>
-          </label>
-          <button
-            disabled={!enable}
-            className="h-[32px] rounded-sm font-semibold bg-brand text-white text-sm disabled:opacity-50"
-          >
-            Login In
-          </button>
-          <div className="flex items-center">
-            <div className="h-px bg-gray-300 flex-1 "></div>
-            <span className="px-4 text-xs font-semibold text-gray-600">OR</span>
-            <div className="h-px bg-gray-300 flex-1 "></div>
-          </div>
-        </form> */}
         </div>
         <div className="w-[351px] bg-white border p-4 text-sm text-center ">
           Don't Have a account?{" "}
@@ -258,4 +283,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignInPage;
