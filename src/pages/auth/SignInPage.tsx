@@ -20,6 +20,9 @@ import toast from "react-hot-toast";
 import * as Yup from "yup";
 import { FormHelperText } from "@mui/material";
 import { withFormik, FormikProps, FormikErrors, Form, Field } from "formik";
+import Button from "../../componnets/Auth/Button";
+import Separator from "../../componnets/Auth/Separator";
+import { Link } from "react-router-dom";
 
 interface FormState {
   showPassword: boolean;
@@ -144,14 +147,22 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
           </FormHelperText>
         )}
       </FormControl>
-      <button
+
+      <Button
+        type="submit"
+        disabled={!values.email || !values.password}
+        onClick={handleSubmit}
+      >
+        Log In
+      </Button>
+      {/* <button
         type="submit"
         disabled={!values.email || !values.password}
         className="h-[32px] rounded-sm font-semibold bg-brand text-white text-sm disabled:opacity-50"
         onClick={handleSubmit}
       >
         Log In
-      </button>
+      </button> */}
     </Form>
   );
 };
@@ -257,13 +268,7 @@ const SignInPage = () => {
           <div className="grid gap-y-3">
             <MyForm message="Sign In" />
 
-            <div className="flex items-center my-3.5">
-              <div className="h-px bg-gray-300 flex-1 "></div>
-              <span className="px-4 text-xs font-semibold text-gray-600">
-                OR
-              </span>
-              <div className="h-px bg-gray-300 flex-1 "></div>
-            </div>
+            <Separator></Separator>
           </div>
           <div>
             <div className="flex justify-center items-center mt-2 gap-x-2 text-sm  text-facebook font-semibold">
@@ -276,7 +281,9 @@ const SignInPage = () => {
         </div>
         <div className="w-[351px] bg-white border p-4 text-sm text-center ">
           Don't Have a account?{" "}
-          <span className="font-semibold text-brand">Sign up</span>
+          <Link to={"SignUp"}>
+            <span className="font-semibold text-brand">Sign up</span>
+          </Link>
         </div>
       </div>
     </div>

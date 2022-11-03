@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 type userLoginType = {
   email: string;
@@ -18,9 +19,29 @@ type userLoginRequestType = {
   };
 };
 
-type SignupRequest = {
+type SignupType = {
   email: string;
   password: string;
+  userNickName: string;
+};
+
+export type getUserType = {
+  email: string;
+  userProfilePicture?: string;
+  _id: string;
+  userNickName: string;
+  followUps: number | string[];
+  followers: number | string[];
+  userPosts?: string[];
+  gender: string | null;
+  profilePrivate: boolean;
+};
+
+type getUserRequestType = {
+  message: string;
+  data: {
+    user: getUserType | null;
+  };
 };
 
 const PROD_URL = "*";
@@ -36,13 +57,9 @@ export const getLogin = async (
   return data;
 };
 
-export const postSignup = async (input: SignupRequest) => {
-  try {
-    const { data } = await axios.post(`${BASE_URL}/Auth/signup`, input);
-    return { data };
-  } catch (error) {
-    console.log(error);
-  }
+export const postSignup = async (input: SignupType) => {
+  const { data } = await axios.post(`${BASE_URL}/Auth/signup`, input);
+  return data;
 };
 
 export const getMe = async (): Promise<userLoginRequestType> => {
@@ -57,4 +74,18 @@ export const getLogout = async (): Promise<userLoginRequestType> => {
     withCredentials: true,
   });
   return data;
+};
+
+export const getUser = async (
+  userNickName: string | undefined
+): Promise<getUserRequestType | null> => {
+  try {
+    const res = await axios.get(`${BASE_URL}/User/${userNickName}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    toast.error("kullanıcı nulunamadı");
+    throw new Error("Kullanıcı Bulunamadı");
+  }
 };
