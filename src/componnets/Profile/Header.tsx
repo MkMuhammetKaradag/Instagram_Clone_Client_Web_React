@@ -6,7 +6,7 @@ type profileHeaderProps = {
 const Header = ({ user }: profileHeaderProps) => {
   return (
     <div>
-      <header className="flex items-center  gap-x-6">
+      <header className="flex items-center  gap-x-6 py-4 pb-10">
         <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDJaEoQJ0PLbNOn_xHRIw7mcyuIOj0_hVZlA&usqp=CAU"
           className="w-[150px]  rounded-full "

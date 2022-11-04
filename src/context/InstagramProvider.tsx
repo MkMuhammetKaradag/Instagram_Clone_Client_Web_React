@@ -26,11 +26,11 @@ const InstagramProvider = ({ children }: InstagramProviderProps) => {
   useEffect(() => {
     getMe()
       .then((data) => {
-        // console.log("provider->", data);
+        console.log("provider->");
         setUser(data.data.user);
       })
       .catch(() => {
-        setUser(null);
+        console.log("err");
       })
       .finally(() => {
         setIsLoading(false);

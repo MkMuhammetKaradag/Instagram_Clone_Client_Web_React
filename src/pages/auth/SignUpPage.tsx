@@ -305,7 +305,7 @@ const MyForm = withFormik<MyFormProps, FormValues>({
 
   validationSchema: SignInSchema,
   handleSubmit: (values, actions) => {
-    console.log("geldi");
+    // console.log("geldi");
 
     postSignup({
       email: values.email,

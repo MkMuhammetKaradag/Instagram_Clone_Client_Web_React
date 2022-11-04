@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import { getLogout } from "../../api";
 import InstagramTextLogo from "../../assest/InstagramTextLogo2.png";
@@ -11,7 +11,9 @@ import { RiMessengerLine } from "react-icons/ri";
 import { FiPlusSquare } from "react-icons/fi";
 import { MdOutlineExplore } from "react-icons/md";
 import { AiOutlineHeart } from "react-icons/ai";
+import { useAppSelector } from "../../app/hooks";
 const Header = () => {
+  const user = useAppSelector((s) => s.auth.user);
   const dispatch = useDispatch();
   const logout = async () => {
     getLogout()
@@ -42,6 +44,10 @@ const Header = () => {
             <MdOutlineExplore size={28}></MdOutlineExplore>
           </NavLink>
           <NavLink to={"/"}>
+            <AiOutlineHeart size={28}></AiOutlineHeart>
+          </NavLink>
+
+          <NavLink to={`/user/${user?.userNickName}/posts`}>
             <AiOutlineHeart size={28}></AiOutlineHeart>
           </NavLink>
           <button onClick={logout}>

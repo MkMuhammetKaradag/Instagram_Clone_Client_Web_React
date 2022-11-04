@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "./logo.svg";
 
 import "./App.css";
@@ -11,6 +11,10 @@ import { FaInstagram } from "react-icons/fa";
 function App() {
   const userSession = useAppSelector((s) => s.auth.user);
   const isAuthLoading = useAppSelector((s) => s.auth.isAuthLoading);
+  useEffect(() => {
+    console.log("nive");
+  }, []);
+
   return (
     <div className="h-full w-full">
       <Toaster position="top-center" reverseOrder={false}></Toaster>

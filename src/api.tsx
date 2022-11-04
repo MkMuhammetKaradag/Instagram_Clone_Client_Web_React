@@ -85,7 +85,6 @@ export const getUser = async (
     });
     return res.data;
   } catch (error) {
-    toast.error("kullanıcı nulunamadı");
     throw new Error("Kullanıcı Bulunamadı");
   }
 };

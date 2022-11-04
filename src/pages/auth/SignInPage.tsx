@@ -22,8 +22,10 @@ import { FormHelperText } from "@mui/material";
 import { withFormik, FormikProps, FormikErrors, Form, Field } from "formik";
 import Button from "../../componnets/Auth/Button";
 import Separator from "../../componnets/Auth/Separator";
-import { Link } from "react-router-dom";
-
+import { Link, NavigateFunction, useNavigate } from "react-router-dom";
+// import { Helmet } from "react-helmet";
+import { AnyAction, Dispatch } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
 interface FormState {
   showPassword: boolean;
 }
@@ -62,22 +64,7 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
   ) => {
     event.preventDefault();
   };
-  const handleSubmit = () => {
-    getLogin({
-      email: values.email,
-      password: values.password,
-    })
-      .then((user) => {
-        console.log(user.data.user);
-        if (user.data.user) {
-          dispatch(setUser(user.data.user));
-          toast.success("Successfully toasted!");
-        }
-      })
-      .catch((err) => {
-        toast.error("This didn't work.");
-      });
-  };
+  // const handleSubmit = () => {};
 
   return (
     <Form className="grid gap-y-1.5">
@@ -126,6 +113,7 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
           id="outlined-adornment-password"
           type={formValues.showPassword ? "text" : "password"}
           name="password"
+          autoComplete="on"
           error={touched.password && Boolean(errors.password)}
           onChange={handleChange}
           endAdornment={
@@ -151,7 +139,7 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
       <Button
         type="submit"
         disabled={!values.email || !values.password}
-        onClick={handleSubmit}
+        // onClick={handleSubmit}
       >
         Log In
       </Button>
@@ -172,6 +160,8 @@ interface MyFormProps {
   initialEmail?: string;
   initialPassword?: string;
   message: string; // if this passed all the way through you might do this or make a union type
+  dispatch: Dispatch<AnyAction>;
+  navigate: NavigateFunction;
 }
 const SignInSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -191,14 +181,33 @@ const MyForm = withFormik<MyFormProps, FormValues>({
   },
 
   validationSchema: SignInSchema,
-  handleSubmit: (values) => {},
+  handleSubmit: (values, actions) => {
+    getLogin({
+      email: values.email,
+      password: values.password,
+    })
+      .then((user) => {
+        console.log(user.data.user);
+        if (user.data.user) {
+          actions.props.dispatch(setUser(user.data.user));
+          toast.success("Successfully toasted!");
+          actions.props.navigate("/");
+        }
+      })
+      .catch((err) => {
+        toast.error("This didn't work.");
+      });
+  },
 })(InnerForm);
 
 // Use <MyForm /> wherevs
 
 const SignInPage = () => {
   const ref = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
+    console.log("neden");
     let images = ref.current?.querySelectorAll("img"),
       total = images?.length || 0,
       current = 0;
@@ -227,6 +236,9 @@ const SignInPage = () => {
 
   return (
     <div className="h-full  w-full gap-x-8 flex items-center justify-center">
+      {/* <Helmet>
+        <title>Login Instagram</title>
+      </Helmet> */}
       <div className="hidden md:block w-[380px] h-[581px] bg-login-pattern relative  bg-[length:468.32px_634.15px] bg-[top_left_-46px]">
         <div
           className="w-[250px] h-[538px] absolute top-[27px] right-[18px]"
@@ -266,7 +278,7 @@ const SignInPage = () => {
             />
           </div>
           <div className="grid gap-y-3">
-            <MyForm message="Sign In" />
+            <MyForm message="Sign In" dispatch={dispatch} navigate={navigate} />
 
             <Separator></Separator>
           </div>

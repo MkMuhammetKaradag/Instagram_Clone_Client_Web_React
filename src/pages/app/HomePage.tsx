@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { Helmet } from "react-helmet";
 
 const HomePage = () => {
-  return <div>HomePage</div>;
+  useEffect(() => {
+    console.log("uuuu");
+  }, []);
+  return (
+    <div>
+      <Helmet>
+        <title>Instagram</title>
+      </Helmet>
+      Merhaba chat
+    </div>
+  );
 };
 
 export default HomePage;
