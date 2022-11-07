@@ -7,10 +7,10 @@ import Search from "../Search";
 import toast from "react-hot-toast";
 import { setUser } from "../../context/Auth/authSlice";
 import { SlHome } from "react-icons/sl";
-import { RiMessengerLine } from "react-icons/ri";
+import { RiMessengerLine, RiMessengerFill } from "react-icons/ri";
 import { FiPlusSquare } from "react-icons/fi";
 import { MdOutlineExplore } from "react-icons/md";
-import { AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHome, AiOutlineHome } from "react-icons/ai";
 import { useAppSelector } from "../../app/hooks";
 const Header = () => {
   const user = useAppSelector((s) => s.auth.user);
@@ -32,10 +32,22 @@ const Header = () => {
         <Search></Search>
         <nav className="flex items-center gap-x-6">
           <NavLink to={"/"}>
-            <SlHome size={25}></SlHome>
+            {({ isActive }) =>
+              isActive ? (
+                <AiFillHome size={25}></AiFillHome>
+              ) : (
+                <AiOutlineHome size={28}></AiOutlineHome>
+              )
+            }
           </NavLink>
-          <NavLink to={"/"}>
-            <RiMessengerLine size={28}></RiMessengerLine>
+          <NavLink to={"/inbox"}>
+            {({ isActive }) =>
+              isActive ? (
+                <RiMessengerFill size={28}></RiMessengerFill>
+              ) : (
+                <RiMessengerLine size={28}></RiMessengerLine>
+              )
+            }
           </NavLink>
           <NavLink to={"/"}>
             <FiPlusSquare size={28}></FiPlusSquare>

@@ -6,6 +6,10 @@ import HomePage from "../pages/app/HomePage";
 import ProfilePage from "../pages/app/Profile/ProfilePage";
 import ProfileTagged from "../pages/app/Profile/ProfileTagged";
 import ProfilePost from "../pages/app/Profile/ProfilePost";
+
+import InboxLayout from "../pages/app/inbox";
+import Inbox from "../pages/app/inbox/Inbox";
+import Chat from "../pages/app/inbox/Chat";
 const AppNavigator = () => {
   return (
     <>
@@ -16,6 +20,10 @@ const AppNavigator = () => {
           <Route path="/user/:userName" element={<ProfilePage></ProfilePage>}>
             <Route path="posts" element={<ProfilePost></ProfilePost>} />
             <Route path="tagged" element={<ProfileTagged />} />
+          </Route>
+          <Route path="/inbox" element={<InboxLayout></InboxLayout>}>
+            <Route path="" element={<Inbox></Inbox>}></Route>
+            <Route path=":chatId" element={<Chat></Chat>}></Route>
           </Route>
         </Routes>
       </div>
