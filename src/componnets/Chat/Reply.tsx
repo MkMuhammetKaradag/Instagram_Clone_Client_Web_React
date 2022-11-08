@@ -1,42 +1,35 @@
 import { TextField } from "@mui/material";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
+import { useParams } from "react-router-dom";
+import { ChatMessage } from "../../api";
+import { useAppSelector } from "../../app/hooks";
+import { WebSocketContext } from "../../context/WebSocketContext";
 
 type ReplyPropsType = {
-  setMessages: React.Dispatch<
-    React.SetStateAction<
-      {
-        from: {
-          id: string;
-          name: string;
-          username: string;
-          avatar: string;
-        };
-        message: string;
-      }[]
-    >
-  >;
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 };
 
 const Reply = ({ setMessages }: ReplyPropsType) => {
   const [message, setmessage] = useState<string>("");
+  const user = useAppSelector((s) => s.auth.user);
+  const { chatId } = useParams();
+  const socket = useContext(WebSocketContext);
   const sendMessage = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    console.log(message);
-    setMessages((messages) => [
-      ...messages,
-      {
-        from: {
-          id: "63578f6761e297c1a19c1b70",
-          name: "muhammet",
-          username: "deneme",
-          avatar:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfm8UnQUb93iMa_J1a9GuKRJ1LWIzTD8dxrA&usqp=CAU",
+    // console.log(message);
+    if (message) {
+      setMessages((messages) => [...messages]);
+      socket.emit("newMessage", {
+        createdMessage: {
+          from: user?._id,
+          MessageText: message,
         },
-        message: message,
-      },
-    ]);
+        ChatId: chatId,
+      });
+    }
+
     setmessage("");
   };
   return (

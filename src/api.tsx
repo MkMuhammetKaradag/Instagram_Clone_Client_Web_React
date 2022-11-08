@@ -1,5 +1,6 @@
 import axios from "axios";
 import toast from "react-hot-toast";
+import { ChatsType } from "./context/User/userSlice";
 
 type userLoginType = {
   email: string;
@@ -12,6 +13,11 @@ type userType = {
   userNickName: string;
 };
 
+type PostUserType = {
+  userProfilePicture: string | null;
+  _id: string;
+  userNickName: string;
+};
 type userLoginRequestType = {
   message: string;
   data: {
@@ -44,6 +50,65 @@ type getUserRequestType = {
   };
 };
 
+export type messageType = {
+  _id: string;
+  from: string;
+  MessageText: string;
+  __v: number;
+};
+
+type getChatsRequestType = {
+  message: string;
+  data: {
+    chats: ChatsType[] | null;
+  };
+};
+export type ChatMessage = {
+  _id: string;
+  from: {
+    userProfilePicture: string | null;
+    _id: string;
+    userNickName: string;
+  };
+  MessageText: string;
+  created_at: string;
+  updatedAt: string;
+};
+
+export type PostType = {
+  _id: string;
+  description: string;
+  type: string;
+  hastags: string[];
+  likes: PostUserType[];
+  owner: PostUserType;
+  comments: {
+    _id: string;
+    description: string;
+    user: PostUserType;
+  }[];
+  total_views: number;
+  video_url: string | null;
+  image_url: string | null;
+  createdAt: string;
+};
+type getMyFollowUpsPostsRequestType = {
+  message: string;
+  data: {
+    myFollowUpsPosts: PostType[];
+  };
+};
+
+type getChatMessagesRequestType = {
+  message: string;
+  data: {
+    messages: {
+      _id: string;
+      users: string[];
+      Messages: ChatMessage[] | [];
+    };
+  };
+};
 const PROD_URL = "*";
 const LOCAL_URL = "http://localhost:8080";
 export const BASE_URL = LOCAL_URL;
@@ -88,3 +153,27 @@ export const getUser = async (
     throw new Error("Kullanıcı Bulunamadı");
   }
 };
+
+export const getChats = async (): Promise<getChatsRequestType | null> => {
+  const { data } = await axios.get(`${BASE_URL}/Chats`, {
+    withCredentials: true,
+  });
+  return data;
+};
+
+export const getChatMessages = async (
+  chatId: string
+): Promise<getChatMessagesRequestType> => {
+  const { data } = await axios.get(`${BASE_URL}/Chats/messages/${chatId}`, {
+    withCredentials: true,
+  });
+  return data;
+};
+
+export const getMyFollowUpsPosts =
+  async (): Promise<getMyFollowUpsPostsRequestType> => {
+    const { data } = await axios.get(`${BASE_URL}/Post/myFollowUpsPosts`, {
+      withCredentials: true,
+    });
+    return data;
+  };

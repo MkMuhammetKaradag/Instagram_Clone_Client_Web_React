@@ -1,12 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaRegEdit } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { useAppSelector } from "../../app/hooks";
+import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import ChatList from "../Chat/ChatList";
 import { useParams } from "react-router-dom";
+import { getChats } from "../../api";
+import { setChats } from "../../context/User/userSlice";
 const Sidebar = () => {
   const user = useAppSelector((S) => S.auth.user);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    getChats()
+      .then((res) => {
+        if (res?.data.chats) {
+          // console.log(res.data.chats);
+          dispatch(setChats(res.data.chats));
+        }
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <aside className="w-[435px] flex-shrink border-r  bortder-gray-300">

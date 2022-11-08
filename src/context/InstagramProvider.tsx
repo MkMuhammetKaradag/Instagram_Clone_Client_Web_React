@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import { configureStore } from "@reduxjs/toolkit";
 import AuthReducer, { User } from "./Auth/authSlice";
+import UserReducer from "./User/userSlice";
 import { getMe } from "../api";
 import { useCookies } from "react-cookie";
 // import {
@@ -19,6 +20,7 @@ interface InstagramProviderProps {
 const InstagramProvider = ({ children }: InstagramProviderProps) => {
   const reducer = {
     auth: AuthReducer,
+    user: UserReducer,
   };
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,6 +45,9 @@ const InstagramProvider = ({ children }: InstagramProviderProps) => {
       auth: {
         user: user,
         isAuthLoading: isLoading,
+      },
+      user: {
+        chats: null,
       },
     },
   });

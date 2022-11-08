@@ -75,9 +75,9 @@ const ProfilePage = () => {
 
   return user ? (
     <div>
-      <Helmet>
+      {/* <Helmet>
         <title>(@{user.userNickName}) * Instagram Photos and Videos</title>
-      </Helmet>
+      </Helmet> */}
       <Header user={user}></Header>
       <nav className="border-t">
         {/* <NavLink to={`/user/${user?.userNickName}`}>

@@ -7,6 +7,9 @@ import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 import InstagramProvider from "./context/InstagramProvider";
 import ReactDOM from "react-dom";
+import { WebSocketProvider, socket } from "./context/WebSocketContext";
+// import { socket, WebSocketProvider } from "";
+
 const container = document.getElementById("root")!;
 const root = createRoot(container);
 const rootElement = document.getElementById("root");
@@ -15,7 +18,9 @@ root.render(
   <React.StrictMode>
     {/* <Provider store={store}> */}
     <InstagramProvider>
-      <App />
+      <WebSocketProvider value={socket}>
+        <App />
+      </WebSocketProvider>
     </InstagramProvider>
 
     {/* </Provider> */}
