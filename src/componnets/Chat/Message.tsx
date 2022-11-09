@@ -18,7 +18,7 @@ const Message = ({ message }: MessageProps) => {
           src={
             message.from.userProfilePicture
               ? message.from.userProfilePicture
-              : ""
+              : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQjblwVQ-GlXCaTJnkev2wwBkrWAZQzUehfQ&usqp=CAU"
           }
           className={"w-6 h-6 rounded-full self-end"}
         ></img>

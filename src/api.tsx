@@ -33,13 +33,12 @@ type SignupType = {
 
 export type getUserType = {
   email: string;
-  userProfilePicture?: string;
+  userProfilePicture: string | null;
   _id: string;
   userNickName: string;
-  followUps: number | string[];
-  followers: number | string[];
-  userPosts?: string[];
-  gender: string | null;
+  followUps: number | PostUserType[];
+  followers: number | PostUserType[];
+  userPosts: PostType_2[];
   profilePrivate: boolean;
 };
 
@@ -92,6 +91,24 @@ export type PostType = {
   image_url: string | null;
   createdAt: string;
 };
+
+export type PostType_2 = {
+  _id: string;
+  description: string;
+  type: string;
+  hastags: string[];
+  likes: PostUserType[];
+  comments: {
+    _id: string;
+    description: string;
+    user: PostUserType;
+  }[];
+  total_views: number;
+  video_url: string | null;
+  image_url: string | null;
+  createdAt: string;
+};
+
 type getMyFollowUpsPostsRequestType = {
   message: string;
   data: {

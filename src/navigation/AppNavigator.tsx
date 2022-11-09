@@ -10,9 +10,11 @@ import ProfilePost from "../pages/app/Profile/ProfilePost";
 import InboxLayout from "../pages/app/inbox";
 import Inbox from "../pages/app/inbox/Inbox";
 import Chat from "../pages/app/inbox/Chat";
+import { socket, WebSocketProvider } from "../context/WebSocketContext";
 const AppNavigator = () => {
   return (
     <>
+      {/* <WebSocketProvider value={socket}> */}
       <Header></Header>
       <div className="container mx-auto pt-4">
         <Routes>
@@ -27,6 +29,7 @@ const AppNavigator = () => {
           </Route>
         </Routes>
       </div>
+      {/* </WebSocketProvider> */}
     </>
   );
 };

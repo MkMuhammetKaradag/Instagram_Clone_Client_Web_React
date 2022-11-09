@@ -7,6 +7,7 @@ import { FiSend } from "react-icons/fi";
 import ShowMoreText from "react-show-more-text";
 import { TextField } from "@mui/material";
 import VideoCard from "./video/VideoCard";
+import { Link } from "react-router-dom";
 
 type PostCardProps = {
   post: PostType;
@@ -19,16 +20,23 @@ const PostCard = ({ post }: PostCardProps) => {
     <div className="border bg-white border-gray-400 rounded-md w-[480px] ">
       <div className="flex items-center justify-between p-4">
         <div className="flex  items-center">
-          <img
-            className="w-[35px] h-[35px] rounded-full"
-            src={
-              post.owner.userProfilePicture
-                ? post.owner.userProfilePicture
-                : "https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png"
-            }
-            alt="post_user_ image"
-          />
-          <span className="ml-2 font-semibold">{post.owner.userNickName}</span>
+          <Link
+            className="flex items-center"
+            to={`/user/${post.owner.userNickName}/posts`}
+          >
+            <img
+              className="w-[35px] h-[35px] rounded-full"
+              src={
+                post.owner.userProfilePicture
+                  ? post.owner.userProfilePicture
+                  : "https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png"
+              }
+              alt="post_user_ image"
+            />
+            <span className="ml-2 font-semibold">
+              {post.owner.userNickName}
+            </span>
+          </Link>
         </div>
 
         <BsThreeDots size={24}></BsThreeDots>

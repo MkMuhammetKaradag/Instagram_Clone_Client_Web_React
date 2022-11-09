@@ -19,7 +19,7 @@ const ProfilePage = () => {
     /*
       Query logic
     */
-    console.log("kaçkere");
+    // console.log("kaçkere");
     // const fetchData = async () => {
     //   const response = await getUser(userName);
     //   if (response?.data.user) {
@@ -34,7 +34,7 @@ const ProfilePage = () => {
     getUser(userName)
       .then((res) => {
         if (res?.data.user) {
-          // console.log(res.data.user);
+          console.log(res.data.user);
           setUser(res.data.user);
 
           setLoading(false);
@@ -133,7 +133,7 @@ const ProfilePage = () => {
           </Tabs>
         </div>
 
-        <Outlet></Outlet>
+        <Outlet context={user.userPosts} ></Outlet>
       </nav>
     </div>
   ) : (

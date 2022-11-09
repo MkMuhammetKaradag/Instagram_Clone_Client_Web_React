@@ -79,7 +79,7 @@ const Chat = () => {
       // console.log("Unregistering Events...");
       socket.off("connect");
       socket.off("onMessage");
-      socket.disconnect();
+      // socket.disconnect();
     };
   }, [socket]);
 

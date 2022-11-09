@@ -67,7 +67,7 @@ const ChatList = () => {
             <img
               src={
                 (chat && chat.users && chat.users[0].userProfilePicture) ||
-                "null"
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQjblwVQ-GlXCaTJnkev2wwBkrWAZQzUehfQ&usqp=CAU"
               }
               className="w-14 h-14 rounded-full"
               alt=""
