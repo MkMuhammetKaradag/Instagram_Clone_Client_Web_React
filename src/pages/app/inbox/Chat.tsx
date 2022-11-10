@@ -59,7 +59,9 @@ const Chat = () => {
   const socket = useContext(WebSocketContext);
   useEffect(() => {
     // console.log("geldi");
-    socket.connect();
+    if (!socket.connected) {
+      socket.connect();
+    }
     socket.on("connection", () => {
       console.log("çalışmıyorrrr!");
     });

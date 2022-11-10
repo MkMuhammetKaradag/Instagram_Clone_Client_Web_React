@@ -17,7 +17,7 @@ const PostCard = ({ post }: PostCardProps) => {
   const [comment, setComment] = useState<string>("");
   // console.log(post.video_url);
   return (
-    <div className="border bg-white border-gray-400 rounded-md w-[480px] ">
+    <div className="border bg-white border-gray-400 rounded-md mt-4 w-[480px] ">
       <div className="flex items-center justify-between p-4">
         <div className="flex  items-center">
           <Link

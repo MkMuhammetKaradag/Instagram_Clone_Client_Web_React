@@ -12,22 +12,29 @@ import { FiPlusSquare } from "react-icons/fi";
 import { MdOutlineExplore } from "react-icons/md";
 import { AiOutlineHeart, AiFillHome, AiOutlineHome } from "react-icons/ai";
 import { useAppSelector } from "../../app/hooks";
-import { Avatar, IconButton, Tooltip } from "@mui/material";
-
+// import { Avatar, IconButton, Tooltip } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 
-import Typography from "@mui/material/Typography";
-
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { WebSocketContext } from "../../context/WebSocketContext";
+import CreatedPost from "./CreatedPost";
+import { Avatar, IconButton, Tooltip } from "@mui/material";
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -73,9 +80,13 @@ const Header = () => {
               )
             }
           </NavLink>
-          <NavLink to={"/"}>
-            <FiPlusSquare size={28}></FiPlusSquare>
-          </NavLink>
+
+          <FiPlusSquare
+            className="cursor-pointer"
+            onClick={handleModalOpen}
+            size={28}
+          ></FiPlusSquare>
+
           <NavLink to={"/"}>
             <MdOutlineExplore size={28}></MdOutlineExplore>
           </NavLink>
@@ -179,6 +190,30 @@ const Header = () => {
             </MenuItem>
           </Menu>
         </nav>
+
+        <Modal
+          open={modalOpen}
+          onClose={handleModalClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              position: "absolute" as "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 700,
+              height: 700,
+              bgcolor: "background.paper",
+              border: "1px  #000",
+              boxShadow: 24,
+              borderRadius: 2,
+            }}
+          >
+            <CreatedPost></CreatedPost>
+          </Box>
+        </Modal>
       </div>
     </header>
   );

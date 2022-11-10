@@ -126,6 +126,10 @@ type getChatMessagesRequestType = {
     };
   };
 };
+
+// type postUserPostCreatedType:{
+
+// }
 const PROD_URL = "*";
 const LOCAL_URL = "http://localhost:8080";
 export const BASE_URL = LOCAL_URL;
@@ -187,10 +191,26 @@ export const getChatMessages = async (
   return data;
 };
 
-export const getMyFollowUpsPosts =
-  async (): Promise<getMyFollowUpsPostsRequestType> => {
-    const { data } = await axios.get(`${BASE_URL}/Post/myFollowUpsPosts`, {
+export const getMyFollowUpsPosts = async (
+  pageNuber: number = 0
+): Promise<getMyFollowUpsPostsRequestType> => {
+  const { data } = await axios.get(
+    `${BASE_URL}/Post/myFollowUpsPosts?pageNuber=${pageNuber}`,
+    {
       withCredentials: true,
-    });
-    return data;
-  };
+    }
+  );
+  return data;
+};
+
+export const postUserPostCreated = async (formData: any) => {
+  const { data } = await axios.post(`${BASE_URL}/Post`, formData, {
+    withCredentials: true,
+
+    headers: {
+      accept: "*/*",
+      "Content-Type": `multipart/form-data`,
+    },
+  });
+  return data;
+};

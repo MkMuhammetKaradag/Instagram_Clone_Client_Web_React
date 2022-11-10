@@ -3,8 +3,10 @@ import { Helmet } from "react-helmet";
 import { getMyFollowUpsPosts, PostType } from "../../api";
 import Posts from "../../componnets/Home/Posts";
 import ReactPlayer from "react-player";
+
 const HomePage = () => {
   const [posts, setPosts] = useState<PostType[]>([]);
+
   useEffect(() => {
     getMyFollowUpsPosts()
       .then((res) => {
@@ -19,7 +21,7 @@ const HomePage = () => {
       {/* <Helmet>
         <title>Instagram</title>
       </Helmet> */}
-      {posts.length > 0 && <Posts posts={posts}></Posts>}
+      {posts.length > 0 && <Posts setPosts={setPosts} posts={posts}></Posts>}
       {/* <div>
         <ReactPlayer
           width={"100%"}
