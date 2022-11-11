@@ -14,7 +14,7 @@ import Step from "@mui/material/Step";
 import StepButton from "@mui/material/StepButton";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { StepLabel } from "@mui/material";
+import { Avatar, StepLabel } from "@mui/material";
 
 import { DropzoneArea } from "material-ui-dropzone";
 import DropZoneField from "../Dropzone/DropZoneField";
@@ -39,7 +39,12 @@ const createOption = (label: string) => ({
   label,
   value: label,
 });
-const CreatedPost = () => {
+
+type createdPostPropType = {
+  userImage?: string;
+  userNickName?: string;
+};
+const CreatedPost = ({ userImage, userNickName }: createdPostPropType) => {
   //   const theme = useTheme();
   //   const [activeStep, setActiveStep] = React.useState(0);
   //   const maxSteps = 3;
@@ -134,7 +139,7 @@ const CreatedPost = () => {
   const [hashtags, setHashtags] = React.useState<readonly Option[]>([]);
 
   const handleKeyDown: KeyboardEventHandler = (event) => {
-    if (!inputValue) return;
+    if (!inputValue || inputValue.length < 3 || hashtags.length > 6) return;
     switch (event.key) {
       case "Enter":
       case "Tab":
@@ -147,9 +152,9 @@ const CreatedPost = () => {
   };
   return (
     <div>
-      <div className="border-b h-[40px] flex items-center justify-center w-full">
+      {/* <div className="border-b h-[40px] flex items-center justify-center w-full">
         Yeni Gönderi oluştur
-      </div>
+      </div> */}
       {/* <Box sx={{ flexGrow: 1 }}>
         <MobileStepper
           steps={maxSteps}
@@ -214,55 +219,38 @@ const CreatedPost = () => {
           </button>
         </div>
         <div>
-          {allStepsCompleted() ? (
-            <React.Fragment>
-              <Typography sx={{ mt: 2, mb: 1 }}>
-                All steps completed - you&apos;re finished
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleReset}>Reset</Button>
-              </Box>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              {/* {activeStep == 0 && (
-                // <DropzoneArea
-                //   acceptedFiles={["video/*"]}
-                //   maxFileSize={50_000_000}yarn remove 0
-                //   initialFiles={postFiles}
-                //   filesLimit={1}
-                //   onChange={(file) => {
-                //     setPostFiles(file);
-                //   }}
-                //   showPreviews={false}
-                //   showFileNamesInPreview={false}
-                //   dropzoneText="İçerik videosunu sürükle ve bırak."
-                // />
-              )} */}
-              {/* <DropzoneArea
-                onChange={(files) => console.log("Files:", files)}
-              /> */}
-
-              {activeStep == 0 && (
-                <DropZoneField file={file} setFile={setFile}></DropZoneField>
-              )}
-              {activeStep == 1 && (
-                <div className="flex bg-slate-300  items-center flex-col justify-center">
-                  <TextField
-                    id="outlined-multiline-flexible"
-                    className="flex-1 outline-none  w-full px-2 placeholder:text-gray-600 text-sm  focus:placeholder:text-gray-300"
-                    multiline
-                    maxRows={4}
-                    inputProps={{ maxLength: 200 }}
-                    placeholder="Description..!!!"
-                    value={description}
-                    variant="standard"
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                  <div>naber </div>
+          <div className="flex">
+            {activeStep >= 0 && (
+              <DropZoneField file={file} setFile={setFile}></DropZoneField>
+            )}
+            {activeStep == 1 && (
+              <div className="flex flex-col mx-2  w-[300px] ">
+                <div className="my-2 flex items-center gap-x-2">
+                  <Avatar
+                    sx={{
+                      width: 35,
+                      height: 35,
+                    }}
+                    src={userImage}
+                  ></Avatar>
+                  <span>{userNickName}</span>
+                </div>
+                <TextField
+                  id="outlined-multiline-flexible"
+                  className=" outline-none  w-full px-2 placeholder:text-gray-600 text-sm  focus:placeholder:text-gray-300"
+                  multiline
+                  rows={4}
+                  maxRows={4}
+                  inputProps={{ maxLength: 200 }}
+                  placeholder="Description..!!!"
+                  value={description}
+                  variant="standard"
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                <div className="relative mt-2">
+                  <Typography>Select Hastag: </Typography>
                   <CreatableSelect
-                    className="h-[20px] w-full "
+                    className="h-[20px] w-full"
                     components={components}
                     inputValue={inputValue}
                     isClearable
@@ -275,13 +263,16 @@ const CreatedPost = () => {
                     value={hashtags}
                   />
                 </div>
-              )}
+              </div>
+            )}
+            {activeStep == 2 && (
               <button className="mt-20" onClick={createdPostSubmit}>
                 Post oluştur
               </button>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}></Box>
-            </React.Fragment>
-          )}
+            )}
+
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}></Box>
+          </div>
         </div>
       </Box>
     </div>

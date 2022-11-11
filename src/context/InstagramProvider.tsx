@@ -23,13 +23,17 @@ const InstagramProvider = ({ children }: InstagramProviderProps) => {
     user: UserReducer,
   };
   const [user, setUser] = useState<User | null>(null);
+  const [userLikes, setUserLikes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getMe()
       .then((data) => {
-        console.log("provider->");
+        console.log("provider->", data.data.user);
         setUser(data.data.user);
+        setUserLikes(
+          data.data.user?.userLikes ? data.data.user?.userLikes : []
+        );
       })
       .catch(() => {
         console.log("err");
@@ -48,6 +52,7 @@ const InstagramProvider = ({ children }: InstagramProviderProps) => {
       },
       user: {
         chats: null,
+        likes: userLikes,
       },
     },
   });

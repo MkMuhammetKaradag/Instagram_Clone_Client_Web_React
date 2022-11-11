@@ -11,6 +11,7 @@ type userType = {
   userProfilePicture?: string;
   _id: string;
   userNickName: string;
+  userLikes?: string[];
 };
 
 type PostUserType = {

@@ -5,9 +5,11 @@ import { FaRegComment } from "react-icons/fa";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FiSend } from "react-icons/fi";
 import ShowMoreText from "react-show-more-text";
-import { TextField } from "@mui/material";
+import { Modal, TextField, Typography, Box } from "@mui/material";
 import VideoCard from "./video/VideoCard";
-import { Link } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { removeLike, setLike } from "../../context/User/userSlice";
 
 type PostCardProps = {
   post: PostType;
@@ -15,7 +17,39 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const [comment, setComment] = useState<string>("");
-  // console.log(post.video_url);
+  const user = useAppSelector((s) => s.auth.user);
+  const [postLikes, setPostLikes] = useState(post.likes);
+  const dispatch = useAppDispatch();
+  const postLiked = () => {
+    dispatch(setLike(post._id));
+    if (user) {
+      setPostLikes((s) => [
+        ...s,
+        {
+          userNickName: user?.userNickName,
+          _id: user?._id,
+          userProfilePicture: user?.userProfilePicture
+            ? user.userProfilePicture
+            : "",
+        },
+      ]);
+    }
+  };
+  const postRemoveLiked = () => {
+    dispatch(removeLike(post._id));
+    if (user) {
+      setPostLikes((s) => s.filter((likeUser) => likeUser._id != user._id));
+    }
+  };
+  const navigate = useNavigate();
+  const likes = useAppSelector((s) => s.user.likes);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => {
+    navigate(`/`);
+    setModalOpen(false);
+  };
+
   return (
     <div className="border bg-white border-gray-400 rounded-md mt-4 w-[480px] ">
       <div className="flex items-center justify-between p-4">
@@ -50,51 +84,40 @@ const PostCard = ({ post }: PostCardProps) => {
           />
         )}
         {post.type === "VIDEO" && (
-          // <ReactPlayer
-          //   controls={true}
-          //   url={
-          //     "https://muhammetinstagramclone.s3.amazonaws.com/posts/63578f6e61e297c1a19c1b72/videos/a5Y7_i6mUL.mp4"
-          //   }
-          // />
-          // <video
-          //   controls={false}
-          //   autoPlay={false}
-          //   onClick={() => console.log("PLAY")}
-          //   loop
-          //   muted
-          //   className="max-h-[550px] w-full"
-          // >
-          //   <source
-          //     src={post.video_url ? post.video_url : ""}
-          //     type="video/mp4"
-          //   ></source>
-          // </video>
           <VideoCard
             video_url={post.video_url ? post.video_url : ""}
             post_id={post._id}
           ></VideoCard>
-          // <p>{post.video_url}</p>
         )}
       </div>
       <div className="px-4">
         <div className="flex justify-between items-center py-3">
           <div className="flex items-start gap-x-2">
-            <AiOutlineHeart size={26}></AiOutlineHeart>
-            <FaRegComment size={26}></FaRegComment>
+            <AiOutlineHeart
+              className="cursor-pointer"
+              size={26}
+              onClick={() =>
+                likes.includes(post._id) ? postRemoveLiked() : postLiked()
+              }
+              color={likes.includes(post._id) ? "red" : "black"}
+            ></AiOutlineHeart>
+            <FaRegComment
+              className="cursor-pointer hover:text-gray-600 "
+              onClick={() => {
+                handleModalOpen();
+                navigate(`/sa`);
+              }}
+              size={26}
+            ></FaRegComment>
             <FiSend size={26}></FiSend>
           </div>
           <BsBookmark size={26}></BsBookmark>
         </div>
         <div>
-          <span className=" font-semibold">{post.likes.length} beğenme</span>
+          <span className=" font-semibold">{postLikes.length} beğenme</span>
         </div>
 
         <div className="w-full">
-          {/* <span className="font-semibold">{post.owner.userNickName}.. </span>
-          {post.description}
-          asasa saasas asasasa asasasaasa asfdfdf dfdfdf dfdfdfdfd dfdfdfdfddfd
-          dfdfd */}
-
           <ShowMoreText
             /* Default options */
             lines={3}
@@ -129,18 +152,7 @@ const PostCard = ({ post }: PostCardProps) => {
           <button className="w-[40px] h-[42px] flex items-center  justify-center">
             <BsEmojiSmile size={24}></BsEmojiSmile>
           </button>
-          {/* <input
 
-          placeholder="Message..."
-          onChange={(e) => setmessage(e.target.value)}
-        ></input> */}
-
-          {/* <TextField
-          id="outlined-multiline-static"
-          className="flex-1 outline-none h-[40px] px-2 placeholder:text-gray-600 text-sm  focus:placeholder:text-gray-300"
-          multiline
-          rows={4}
-        /> */}
           <TextField
             id="outlined-multiline-flexible"
             className="flex-1 outline-none  px-2 placeholder:text-gray-600 text-sm  focus:placeholder:text-gray-300"
@@ -162,6 +174,34 @@ const PostCard = ({ post }: PostCardProps) => {
           )}
         </form>
       </div>
+      <Modal
+        open={modalOpen}
+        onClose={handleModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute" as "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+
+            bgcolor: "background.paper",
+            border: "1px  #000",
+            boxShadow: 24,
+            borderRadius: 2,
+          }}
+        >
+          <Outlet
+            context={{
+              postPage: {
+                postImage: post.image_url ? post.image_url : "",
+              },
+            }}
+          ></Outlet>
+        </Box>
+      </Modal>
     </div>
   );
 };

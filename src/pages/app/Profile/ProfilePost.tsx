@@ -3,9 +3,15 @@ import { BsGrid3X3 } from "react-icons/bs";
 import { useOutletContext } from "react-router-dom";
 import { PostType_2 } from "../../../api";
 import VideoCard from "../../../componnets/Home/video/VideoCard";
+type outletContextType = {
+  userPosts?: PostType_2[];
+  postPage?: {
+    postImage: string;
+  };
+};
 
 const ProfilePost = () => {
-  const userPosts = useOutletContext<PostType_2[]>();
+  const { userPosts } = useOutletContext<outletContextType>();
   return (
     <div>
       {userPosts && userPosts.length > 0 ? (

@@ -11,6 +11,7 @@ import InboxLayout from "../pages/app/inbox";
 import Inbox from "../pages/app/inbox/Inbox";
 import Chat from "../pages/app/inbox/Chat";
 import { socket, WebSocketProvider } from "../context/WebSocketContext";
+import PostPage from "../pages/app/post/PostPage";
 const AppNavigator = () => {
   return (
     <>
@@ -18,7 +19,9 @@ const AppNavigator = () => {
       <Header></Header>
       <div className="container mx-auto pt-4">
         <Routes>
-          <Route path="/" element={<HomePage></HomePage>}></Route>
+          <Route path="/" element={<HomePage></HomePage>}>
+            <Route path=":postId" element={<PostPage></PostPage>}></Route>
+          </Route>
           <Route path="/user/:userName" element={<ProfilePage></ProfilePage>}>
             <Route path="posts" element={<ProfilePost></ProfilePost>} />
             <Route path="tagged" element={<ProfileTagged />} />

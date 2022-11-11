@@ -133,7 +133,11 @@ const ProfilePage = () => {
           </Tabs>
         </div>
 
-        <Outlet context={user.userPosts} ></Outlet>
+        <Outlet
+          context={{
+            userPosts: user.userPosts,
+          }}
+        ></Outlet>
       </nav>
     </div>
   ) : (

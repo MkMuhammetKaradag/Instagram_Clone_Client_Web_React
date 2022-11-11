@@ -25,12 +25,26 @@ const DropZoneField = ({ setFile, file }: DropZoneFieldPropsType) => {
     console.log(file);
     if (file) {
       return (
-        <div>
-          {file.type == "image/png" && (
-            <img className="w-[50px]" src={URL.createObjectURL(file)}></img>
+        <div className="max-w-[799px] max-h-[580px]">
+          {file.type.includes("image") && (
+            <img
+              className="max-w-[799px] max-h-[580px]"
+              src={URL.createObjectURL(file)}
+            ></img>
           )}
           {file.type == "video/mp4" && (
-            <video className="w-[50px]" src={URL.createObjectURL(file)}></video>
+            <div className="relative w-[799px] h-[580px]">
+              <video
+                className="h-full w-full"
+                style={{
+                  contain: "strict",
+                }}
+                src={URL.createObjectURL(file)}
+              ></video>
+              <div className="absolute top-0 right-0 text-red-900 font-semibold bg-white">
+                video
+              </div>
+            </div>
           )}
         </div>
       );
@@ -39,14 +53,11 @@ const DropZoneField = ({ setFile, file }: DropZoneFieldPropsType) => {
 
   return (
     <div>
-      <div className="flex justify-center items-center w-full">
-        <label className="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+      <div className="flex justify-center items-center w-[800px]  p-2  h-[600px]">
+        <label className="flex flex-col justify-center items-center w-full h-[580px]  mt-4 border-gray-300 border-dashed cursor-pointer dark:hover:bg-gray-100  hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 ">
           <div className="flex flex-col justify-center items-center pt-5 pb-6">
             {file ? (
-              <aside>
-                <h4>Files</h4>
-                {fileList()}
-              </aside>
+              <aside>{fileList()}</aside>
             ) : (
               <svg
                 aria-hidden="true"
