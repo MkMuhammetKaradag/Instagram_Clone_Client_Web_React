@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PostType } from "../../api";
+import { deletePostLike, PostType, putPostLike } from "../../api";
 import { BsThreeDots, BsBookmark, BsEmojiSmile } from "react-icons/bs";
 import { FaRegComment } from "react-icons/fa";
 import { AiOutlineHeart } from "react-icons/ai";
@@ -34,12 +34,22 @@ const PostCard = ({ post }: PostCardProps) => {
         },
       ]);
     }
+    putPostLike(post._id)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
   };
   const postRemoveLiked = () => {
     dispatch(removeLike(post._id));
     if (user) {
       setPostLikes((s) => s.filter((likeUser) => likeUser._id != user._id));
     }
+    deletePostLike(post._id)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
   };
   const navigate = useNavigate();
   const likes = useAppSelector((s) => s.user.likes);
@@ -105,7 +115,7 @@ const PostCard = ({ post }: PostCardProps) => {
               className="cursor-pointer hover:text-gray-600 "
               onClick={() => {
                 handleModalOpen();
-                navigate(`/sa`);
+                navigate(`/${post._id}`);
               }}
               size={26}
             ></FaRegComment>
@@ -196,7 +206,14 @@ const PostCard = ({ post }: PostCardProps) => {
           <Outlet
             context={{
               postPage: {
-                postImage: post.image_url ? post.image_url : "",
+                postUrl: post.image_url
+                  ? post.image_url
+                  : post.video_url
+                  ? post.video_url
+                  : "",
+                _id: post._id,
+                postType: post.type,
+                postOwner: post.owner,
               },
             }}
           ></Outlet>

@@ -14,7 +14,7 @@ type userType = {
   userLikes?: string[];
 };
 
-type PostUserType = {
+export type PostUserType = {
   userProfilePicture: string | null;
   _id: string;
   userNickName: string;
@@ -127,7 +127,17 @@ type getChatMessagesRequestType = {
     };
   };
 };
-
+export type postCommentType = {
+  _id: string;
+  description: string;
+  user: PostUserType;
+};
+type getCommentsFromPostType = {
+  message: string;
+  data: {
+    comments: postCommentType[];
+  };
+};
 // type postUserPostCreatedType:{
 
 // }
@@ -212,6 +222,36 @@ export const postUserPostCreated = async (formData: any) => {
       accept: "*/*",
       "Content-Type": `multipart/form-data`,
     },
+  });
+  return data;
+};
+
+export const getCommentsFromPost = async (
+  postId: string,
+  pageNuber: number
+): Promise<getCommentsFromPostType> => {
+  const { data } = await axios.get(
+    `${BASE_URL}/Post/comment/${postId}?pageNuber=${pageNuber}`,
+    {
+      withCredentials: true,
+    }
+  );
+  return data;
+};
+
+export const putPostLike = async (postId: string) => {
+  const { data } = await axios.put(
+    `${BASE_URL}/Post/like/${postId}`,
+    undefined,
+    {
+      withCredentials: true,
+    }
+  );
+  return data;
+};
+export const deletePostLike = async (postId: string) => {
+  const { data } = await axios.delete(`${BASE_URL}/Post/like/${postId}`, {
+    withCredentials: true,
   });
   return data;
 };
