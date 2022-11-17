@@ -87,7 +87,7 @@ const Header = () => {
             size={28}
           ></FiPlusSquare>
 
-          <NavLink to={"/"}>
+          <NavLink to={"/explore"}>
             <MdOutlineExplore size={28}></MdOutlineExplore>
           </NavLink>
           <NavLink to={"/"}>

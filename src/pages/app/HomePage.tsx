@@ -11,6 +11,7 @@ const HomePage = () => {
     getMyFollowUpsPosts()
       .then((res) => {
         if (res.data.myFollowUpsPosts) {
+          console.log("sa");
           setPosts(res.data.myFollowUpsPosts);
         }
       })

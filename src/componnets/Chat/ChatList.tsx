@@ -2,36 +2,36 @@ import React from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 
-const Chat = [
-  {
-    id: "1",
-    user: {
-      avatar:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5yTxBxqX7UPLILheEuZbgOuYver2PQLQxuQ&usqp=CAU",
-      userName: "Deneme.dene",
-    },
-    lastMessage: "Selam Deneme!",
-  },
-  {
-    id: "2",
-    user: {
-      avatar:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMT3-A3BoHLW3BEGarYVhSG3ha0VvGsLbHIw&usqp=CAU",
-      userName: "Deneme.dene-1",
-    },
-    unread: true,
-    lastMessage: "Selam DenemeAAA!",
-  },
-  {
-    id: "3",
-    user: {
-      avatar:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5yTxBxqX7UPLILheEuZbgOuYver2PQLQxuQ&usqp=CAU",
-      userName: "Deneme.dene-1",
-    },
-    lastMessage: "Selam DenemeSSS!",
-  },
-];
+// const Chat = [
+//   {
+//     id: "1",
+//     user: {
+//       avatar:
+//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5yTxBxqX7UPLILheEuZbgOuYver2PQLQxuQ&usqp=CAU",
+//       userName: "Deneme.dene",
+//     },
+//     lastMessage: "Selam Deneme!",
+//   },
+//   {
+//     id: "2",
+//     user: {
+//       avatar:
+//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMT3-A3BoHLW3BEGarYVhSG3ha0VvGsLbHIw&usqp=CAU",
+//       userName: "Deneme.dene-1",
+//     },
+//     unread: true,
+//     lastMessage: "Selam DenemeAAA!",
+//   },
+//   {
+//     id: "3",
+//     user: {
+//       avatar:
+//         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5yTxBxqX7UPLILheEuZbgOuYver2PQLQxuQ&usqp=CAU",
+//       userName: "Deneme.dene-1",
+//     },
+//     lastMessage: "Selam DenemeSSS!",
+//   },
+// ];
 const ChatList = () => {
   const { chatId } = useParams();
   const chats = useAppSelector((s) => s.user.chats);

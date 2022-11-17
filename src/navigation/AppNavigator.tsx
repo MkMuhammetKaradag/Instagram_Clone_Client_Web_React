@@ -12,6 +12,7 @@ import Inbox from "../pages/app/inbox/Inbox";
 import Chat from "../pages/app/inbox/Chat";
 import { socket, WebSocketProvider } from "../context/WebSocketContext";
 import PostPage from "../pages/app/post/PostPage";
+import DiscoverPage from "../pages/app/discover/DiscoverPage";
 const AppNavigator = () => {
   return (
     <>
@@ -23,13 +24,19 @@ const AppNavigator = () => {
             <Route path=":postId" element={<PostPage></PostPage>}></Route>
           </Route>
           <Route path="/user/:userName" element={<ProfilePage></ProfilePage>}>
-            <Route path="posts" element={<ProfilePost></ProfilePost>} />
+            <Route path="posts" element={<ProfilePost></ProfilePost>}>
+              <Route path=":postId" element={<PostPage></PostPage>}></Route>
+            </Route>
             <Route path="tagged" element={<ProfileTagged />} />
           </Route>
           <Route path="/inbox" element={<InboxLayout></InboxLayout>}>
             <Route path="" element={<Inbox></Inbox>}></Route>
             <Route path=":chatId" element={<Chat></Chat>}></Route>
           </Route>
+          <Route
+            path="/explore"
+            element={<DiscoverPage></DiscoverPage>}
+          ></Route>
         </Routes>
       </div>
       {/* </WebSocketProvider> */}

@@ -33,6 +33,9 @@ export const userSlice = createSlice({
     setLike: (state, action: PayloadAction<string>) => {
       state.likes.push(action.payload);
     },
+    setLikes: (state, action: PayloadAction<string[]>) => {
+      state.likes = action.payload;
+    },
     removeLike: (state, action: PayloadAction<string>) => {
       let index = state.likes.findIndex((s) => s == action.payload);
       if (index > -1) {
@@ -42,6 +45,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setChats, setLike, removeLike } = userSlice.actions;
+export const { setChats, setLike, removeLike, setLikes } = userSlice.actions;
 
 export default userSlice.reducer;

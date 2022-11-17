@@ -135,7 +135,14 @@ const ProfilePage = () => {
 
         <Outlet
           context={{
-            userPosts: user.userPosts,
+            userProfiePage: {
+              userPosts: user.userPosts,
+              userInfo: {
+                userProfilePicture: user.userProfilePicture,
+                _id: user._id,
+                userNickName: user.userNickName,
+              },
+            },
           }}
         ></Outlet>
       </nav>

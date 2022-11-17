@@ -22,7 +22,7 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <aside className="w-[435px] flex-shrink border-r  bortder-gray-300">
+    <aside className="min-w-[435px] flex-shrink border-r  bortder-gray-300">
       <header className="h-[70px] border-b  border-gray-300 flex justify-between items-center  px-4">
         <button className="flex items-center mx-auto gap-x-3 text-base font-semibold">
           {user?.userNickName} <IoIosArrowDown size={24}></IoIosArrowDown>

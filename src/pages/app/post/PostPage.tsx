@@ -7,6 +7,10 @@ import {
   PostType_2,
   PostUserType,
 } from "../../../api";
+
+import { AiOutlinePlusCircle } from "react-icons/ai";
+import { TextField } from "@mui/material";
+import EmojiPicker from "emoji-picker-react";
 type outletContextType = {
   userPosts?: PostType_2[];
   postPage?: {
@@ -20,7 +24,7 @@ const PostPage = () => {
   const { postPage } = useOutletContext<outletContextType>();
   const [comments, setComments] = useState<postCommentType[]>([]);
   const [isLoader, setIsLoader] = useState(true);
-
+  const [comment, setComment] = useState<string>("");
   useEffect(() => {
     if (postPage) {
       getCommentsFromPost(postPage._id, 1)
@@ -48,7 +52,7 @@ const PostPage = () => {
 
   return (
     <div className="w-full h-full flex">
-      <div className="max-w-[900px]  min-w-[200px] max-h-[900px] min-h-[800px] flex  items-center justify-center bg-red-300 h-full">
+      <div className="max-w-[900px]  min-w-[200px] max-h-[900px] min-h-[800px] flex  items-center justify-center h-full">
         {postPage && postPage.postType == "IMAGE" && (
           <img
             className="max-w-[900px] max-h-[800px] min-h-[500px] "
@@ -70,7 +74,7 @@ const PostPage = () => {
           </div>
         )}
       </div>
-      <div className="w-[500px] max-h-[900px] bg-slate-400  ">
+      <div className="w-[500px] max-h-[900px] flex flex-col justify-between min-h-[800px]   ">
         <div className="w-full border-b border-gray-300 p-2 gap-x-2 flex">
           <div>
             <img
@@ -116,14 +120,51 @@ const PostPage = () => {
               </div>
             </div>
           ))}
-          {isLoader && (
-            <div className="w-full cursor-pointer" onClick={fetchData}>
-              loader
+          {isLoader && comments.length > 0 && (
+            <div
+              className="w-full m-auto mb-2 flex items-center justify-center  cursor-pointer"
+              onClick={fetchData}
+            >
+              <AiOutlinePlusCircle size={24}></AiOutlinePlusCircle>
             </div>
           )}
         </div>
-        <div className="w-full bg-black text-white max-h-[200px]">sa</div>
-        {/* </InfiniteScroll> */}
+
+        <div className="flex">
+          <form
+            onSubmit={() => console.log("geldi")}
+            className="min-h-[44px]  max-h-[108px]   flex  items-center  w-full px-2"
+          >
+            {/* <button className="w-[40px] h-[42px] flex items-center  justify-center">
+              
+            </button> */}
+            {/* <EmojiPicker
+              searchDisabled
+              width={300}
+              height={200}
+              onEmojiClick={() => console.log("sa")}
+            /> */}
+            <TextField
+              id="outlined-multiline-flexible"
+              className="flex-1 outline-none  px-2 placeholder:text-gray-600 text-sm  focus:placeholder:text-gray-300"
+              multiline
+              maxRows={4}
+              placeholder="Messages..!!!"
+              value={comment}
+              variant="standard"
+              onChange={(e) => setComment(e.target.value)}
+            />
+            {comment ? (
+              <button className="text-brand font-semibold text-sm  px-3">
+                Send
+              </button>
+            ) : (
+              <button className="w-[40px] h-[42px] flex items-center  justify-center">
+                asasas
+              </button>
+            )}
+          </form>
+        </div>
       </div>
     </div>
   );

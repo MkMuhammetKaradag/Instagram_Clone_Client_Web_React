@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { deletePostLike, PostType, putPostLike } from "../../api";
+import { deletePostLike, postComment, PostType, putPostLike } from "../../api";
 import { BsThreeDots, BsBookmark, BsEmojiSmile } from "react-icons/bs";
 import { FaRegComment } from "react-icons/fa";
 import { AiOutlineHeart } from "react-icons/ai";
@@ -19,38 +19,48 @@ const PostCard = ({ post }: PostCardProps) => {
   const [comment, setComment] = useState<string>("");
   const user = useAppSelector((s) => s.auth.user);
   const [postLikes, setPostLikes] = useState(post.likes);
+  const [postComments, setPostComments] = useState(post.comments);
+
   const dispatch = useAppDispatch();
   const postLiked = () => {
-    dispatch(setLike(post._id));
-    if (user) {
-      setPostLikes((s) => [
-        ...s,
-        {
-          userNickName: user?.userNickName,
-          _id: user?._id,
-          userProfilePicture: user?.userProfilePicture
-            ? user.userProfilePicture
-            : "",
-        },
-      ]);
-    }
     putPostLike(post._id)
       .then((res) => {
-        console.log(res);
+        if (user) {
+          setPostLikes((s) => [...s, user._id]);
+          console.log("postLİke", postLikes);
+          dispatch(setLike(post._id));
+        }
       })
       .catch((err) => console.log(err));
   };
   const postRemoveLiked = () => {
-    dispatch(removeLike(post._id));
-    if (user) {
-      setPostLikes((s) => s.filter((likeUser) => likeUser._id != user._id));
-    }
     deletePostLike(post._id)
       .then((res) => {
-        console.log(res);
+        if (user) {
+          setPostLikes((s) => {
+            return s.filter((id) => id != user._id);
+          });
+          console.log("removelike:", postLikes);
+          dispatch(removeLike(post._id));
+        }
       })
       .catch((err) => console.log(err));
   };
+
+  const addComment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (comment.length > 0) {
+      postComment(post._id, { description: comment })
+        .then((res) => {
+          if (res.data.comments) {
+            setPostComments(res.data.comments);
+            setComment("");
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
   const navigate = useNavigate();
   const likes = useAppSelector((s) => s.user.likes);
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -144,9 +154,9 @@ const PostCard = ({ post }: PostCardProps) => {
           </ShowMoreText>
         </div>
         <div>
-          {post.comments.length > 0 ? (
+          {postComments.length > 0 ? (
             <span className="text-gray-400">
-              {post.comments.length} yorumun tümünü gör{" "}
+              {postComments.length} yorumun tümünü gör{" "}
             </span>
           ) : (
             <p className="text-gray-300"> not comment</p>
@@ -156,7 +166,7 @@ const PostCard = ({ post }: PostCardProps) => {
       <div className="border-b mt-2 border-gray-300"></div>
       <div className="flex">
         <form
-          onSubmit={() => console.log("geldi")}
+          onSubmit={(e) => addComment(e)}
           className="min-h-[44px]  max-h-[108px]   flex  items-center  w-full px-2"
         >
           <button className="w-[40px] h-[42px] flex items-center  justify-center">

@@ -80,13 +80,9 @@ export type PostType = {
   description: string;
   type: string;
   hastags: string[];
-  likes: PostUserType[];
+  likes: string[];
   owner: PostUserType;
-  comments: {
-    _id: string;
-    description: string;
-    user: PostUserType;
-  }[];
+  comments: string[];
   total_views: number;
   video_url: string | null;
   image_url: string | null;
@@ -109,7 +105,18 @@ export type PostType_2 = {
   image_url: string | null;
   createdAt: string;
 };
-
+export type discoverPostType = {
+  _id: string;
+  description: string;
+  type: string;
+  hastags: string[];
+  likes: string[];
+  owner: userType[];
+  comments: string[];
+  video_url: string | null;
+  image_url: string | null;
+  createdAt: string;
+};
 type getMyFollowUpsPostsRequestType = {
   message: string;
   data: {
@@ -136,6 +143,19 @@ type getCommentsFromPostType = {
   message: string;
   data: {
     comments: postCommentType[];
+  };
+};
+
+export type getDiscoverPostsRequestType = {
+  message: string;
+  data: {
+    posts: discoverPostType[];
+  };
+};
+export type postCommentRequestType = {
+  message: string;
+  data: {
+    comments: string[];
   };
 };
 // type postUserPostCreatedType:{
@@ -253,5 +273,29 @@ export const deletePostLike = async (postId: string) => {
   const { data } = await axios.delete(`${BASE_URL}/Post/like/${postId}`, {
     withCredentials: true,
   });
+  return data;
+};
+
+export const getDiscoverPosts = async (
+  pageNumber: number
+): Promise<getDiscoverPostsRequestType> => {
+  const { data } = await axios.get(`${BASE_URL}/Post?pageNuber=${pageNumber}`, {
+    withCredentials: true,
+  });
+  return data;
+};
+export const postComment = async (
+  postId: string,
+  input: {
+    description: string;
+  }
+): Promise<postCommentRequestType> => {
+  const { data } = await axios.post(
+    `${BASE_URL}/Post/comment/${postId}`,
+    input,
+    {
+      withCredentials: true,
+    }
+  );
   return data;
 };

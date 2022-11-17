@@ -19,7 +19,7 @@ const Messages = ({ messages }: MessagesProps) => {
   //   });
   // }, []);
   return (
-    <ScrollToBottom className="h-[calc(100%-154px)]  pb-0 p-4 overflow-auto  messages-box">
+    <ScrollToBottom className="h-[calc(100%-154px)]    pb-0 p-4 overflow-auto  messages-box">
       <div className="mb-auto"></div>
       {messages &&
         messages.map((message, key) => (

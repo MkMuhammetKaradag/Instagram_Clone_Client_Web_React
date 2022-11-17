@@ -63,10 +63,10 @@ const Chat = () => {
       socket.connect();
     }
     socket.on("connection", () => {
-      console.log("çalışmıyorrrr!");
+      console.log("connection!");
     });
     socket.on("disconnect", (reason) => {
-      console.log("amantanrım");
+      console.log("disconnect");
     });
     socket.on("onMessage", (newMessage: MessagePayload) => {
       // console.log("onMessage event Reciver!");
@@ -96,7 +96,7 @@ const Chat = () => {
   }, [chatId]);
 
   return (
-    <div className="flex-1">
+    <div className="flex flex-col w-full">
       <Header></Header>
       <Messages messages={messages}></Messages>
       <Reply setMessages={setMessages}></Reply>
