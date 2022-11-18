@@ -158,6 +158,13 @@ export type postCommentRequestType = {
     comments: string[];
   };
 };
+export type getSearchUsersRequestType = {
+  message: string;
+  data: {
+    users: PostUserType[];
+  };
+};
+
 // type postUserPostCreatedType:{
 
 // }
@@ -293,6 +300,19 @@ export const postComment = async (
   const { data } = await axios.post(
     `${BASE_URL}/Post/comment/${postId}`,
     input,
+    {
+      withCredentials: true,
+    }
+  );
+  return data;
+};
+
+export const getSearchUsers = async (
+  searchText: string,
+  pageNumber: number
+): Promise<getSearchUsersRequestType> => {
+  const { data } = await axios.get(
+    `${BASE_URL}/User/search?searchText=${searchText}&pageNuber=${pageNumber}`,
     {
       withCredentials: true,
     }
