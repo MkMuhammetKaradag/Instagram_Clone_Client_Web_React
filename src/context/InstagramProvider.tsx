@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import { configureStore } from "@reduxjs/toolkit";
 import AuthReducer, { User } from "./Auth/authSlice";
-import UserReducer from "./User/userSlice";
+import UserReducer, { setMyFollowRequests } from "./User/userSlice";
 import { getMe } from "../api";
 import { useCookies } from "react-cookie";
 // import {
@@ -24,6 +24,12 @@ const InstagramProvider = ({ children }: InstagramProviderProps) => {
   };
   const [user, setUser] = useState<User | null>(null);
   const [userLikes, setUserLikes] = useState<string[]>([]);
+  const [userMyFollowRequests, setUserMyFollowRequests] = useState<string[]>(
+    []
+  );
+  const [userFollowRequests, setUserFollowRequests] = useState<string[]>([]);
+  const [userFollowers, setUserFollowers] = useState<string[]>([]);
+  const [userFollowUps, setUserFollowUps] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -34,7 +40,16 @@ const InstagramProvider = ({ children }: InstagramProviderProps) => {
         setUserLikes(
           data.data.user?.userLikes ? data.data.user?.userLikes : []
         );
+        setUserFollowUps(
+          data.data.user?.followUps ? data.data.user?.followUps : []
+        );
+        setUserMyFollowRequests(
+          data.data.user?.myFollowRequests
+            ? data.data.user?.myFollowRequests
+            : []
+        );
       })
+
       .catch(() => {
         console.log("err");
       })
@@ -53,6 +68,10 @@ const InstagramProvider = ({ children }: InstagramProviderProps) => {
       user: {
         chats: null,
         likes: userLikes,
+        myFollowRequests: userMyFollowRequests,
+        followRequests: userFollowRequests,
+        followers: userFollowers,
+        followUps: userFollowUps,
       },
     },
   });

@@ -26,7 +26,12 @@ import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 // import { Helmet } from "react-helmet";
 import { AnyAction, Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { setLike, setLikes } from "../../context/User/userSlice";
+import {
+  setFollowUps,
+  setLike,
+  setLikes,
+  setMyFollowRequests,
+} from "../../context/User/userSlice";
 import textLogo from "../../assest/instagramtextlogo.png";
 interface FormState {
   showPassword: boolean;
@@ -191,8 +196,13 @@ const MyForm = withFormik<MyFormProps, FormValues>({
       .then((user) => {
         console.log(user.data.user);
         if (user.data.user) {
+          console.log(user.data.user);
           actions.props.dispatch(setUser(user.data.user));
           actions.props.dispatch(setLikes(user.data.user.userLikes || []));
+          actions.props.dispatch(setFollowUps(user.data.user.followUps || []));
+          actions.props.dispatch(
+            setMyFollowRequests(user.data.user.myFollowRequests || [])
+          );
           toast.success("Successfully toasted!");
           actions.props.navigate("/");
         }

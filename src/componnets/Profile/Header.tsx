@@ -1,7 +1,8 @@
-import React from "react";
-import { getUserType } from "../../api";
+import React, { useState } from "react";
+import {  deleteUnFollowUser, getUserType, postFollowUser } from "../../api";
 import { FiSettings } from "react-icons/fi";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { removeFollowUp, setFollowUp } from "../../context/User/userSlice";
 
 type profileHeaderProps = {
   user: getUserType | null;
@@ -9,6 +10,46 @@ type profileHeaderProps = {
 
 const Header = ({ user }: profileHeaderProps) => {
   const myUser = useAppSelector((s) => s.auth.user);
+  const followUps = useAppSelector((s) => s.user.followUps);
+  const myFollowRequests = useAppSelector((s) => s.user.myFollowRequests);
+
+  const dispatch = useAppDispatch();
+
+  const [isFollow, setIsFollow] = useState(
+    followUps.findIndex((s) => s == user?._id) > -1
+  );
+  console.log(
+    "değer.",
+    myFollowRequests.findIndex((s) => s == user?._id) > -1,
+    myFollowRequests
+  );
+
+  const followUser = async () => {
+    if (user) {
+      postFollowUser(user._id)
+        .then((res) => {
+          if (res.data) {
+            dispatch(setFollowUp(user._id));
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+  const unFollowUser = async () => {
+    if (user) {
+      deleteUnFollowUser(user._id)
+        .then((res) => {
+          if (res.data) {
+            dispatch(removeFollowUp(user._id));
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
   return (
     <div className="justify-center flex">
       <header className="flex items-center w-[60%]  gap-x-2 py-4 pb-10 ">
@@ -24,13 +65,46 @@ const Header = ({ user }: profileHeaderProps) => {
           <div className="">
             <div className="flex  items-center  gap-x-3">
               <h1 className="text-[28px] font-light">{user?.userNickName}</h1>
-              {myUser?.userNickName == user?.userNickName && (
+
+              {myUser?.userNickName == user?.userNickName ? (
                 <>
                   <button className="border shadow-sm p-1 rounded-md">
                     Profili Düzenle
                   </button>
                   <FiSettings size={24}></FiSettings>
                 </>
+              ) : followUps.findIndex((s) => s == user?._id) <= -1 ? (
+                user?.profilePrivate ? (
+                  myFollowRequests.findIndex((s) => s == user?._id) > -1 ? (
+                    <button
+                      onClick={() => console.log("sa")}
+                      className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight  rounded shadow-md hover:bg-gray-200   active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out"
+                    >
+                      Takip İsteği iptali
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => console.log("sa")}
+                      className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight  rounded shadow-md hover:bg-gray-200   active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out"
+                    >
+                      Takip İsteği
+                    </button>
+                  )
+                ) : (
+                  <button
+                    onClick={() => followUser()}
+                    className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight  rounded shadow-md hover:bg-gray-200   active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out"
+                  >
+                    Takipet
+                  </button>
+                )
+              ) : (
+                <button
+                  onClick={() => unFollowUser()}
+                  className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight  rounded shadow-md hover:bg-gray-200   active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out"
+                >
+                  Takipten çık
+                </button>
               )}
             </div>
 
@@ -42,20 +116,12 @@ const Header = ({ user }: profileHeaderProps) => {
                 posts
               </div>
               <div>
-                <span className="font-semibold">
-                  {typeof user?.followUps == "number"
-                    ? user?.followUps
-                    : user?.followUps.length}
-                </span>{" "}
+                <span className="font-semibold">{user?.followUps.length}</span>{" "}
                 following
               </div>
 
               <div>
-                <span className="font-semibold">
-                  {typeof user?.followers == "number"
-                    ? user?.followers
-                    : user?.followers.length}
-                </span>{" "}
+                <span className="font-semibold">{user?.followers.length}</span>{" "}
                 followers
               </div>
             </nav>

@@ -12,6 +12,8 @@ type userType = {
   _id: string;
   userNickName: string;
   userLikes?: string[];
+  followUps?: string[];
+  myFollowRequests?: string[];
 };
 
 export type PostUserType = {
@@ -37,8 +39,8 @@ export type getUserType = {
   userProfilePicture: string | null;
   _id: string;
   userNickName: string;
-  followUps: number | PostUserType[];
-  followers: number | PostUserType[];
+  followUps: string[] | PostUserType[];
+  followers: string[] | PostUserType[];
   userPosts: PostType_2[];
   profilePrivate: boolean;
 };
@@ -317,5 +319,27 @@ export const getSearchUsers = async (
       withCredentials: true,
     }
   );
+  return data;
+};
+
+export const postFollowUser = async (followUserId: string) => {
+  const { data } = await axios.post(
+    `${BASE_URL}/User/followUser/${followUserId}`,
+    undefined,
+    {
+      withCredentials: true,
+    }
+  );
+
+  return data;
+};
+export const deleteUnFollowUser = async (followUserId: string) => {
+  const { data } = await axios.delete(
+    `${BASE_URL}/User/unfollow/${followUserId}`,
+    {
+      withCredentials: true,
+    }
+  );
+
   return data;
 };

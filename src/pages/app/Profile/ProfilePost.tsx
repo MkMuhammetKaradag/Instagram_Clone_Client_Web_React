@@ -15,7 +15,9 @@ const ProfilePost = () => {
   const { userProfiePage } = useOutletContext<outletContextType>();
   return (
     <div>
-      {userProfiePage && userProfiePage.userPosts.length > 0 ? (
+      {userProfiePage &&
+      userProfiePage.userPosts &&
+      userProfiePage.userPosts.length > 0 ? (
         <div>
           <section className=" text-gray-700 ">
             <div className="container">
