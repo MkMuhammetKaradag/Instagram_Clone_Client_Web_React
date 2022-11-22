@@ -16,20 +16,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<getUserType | null>(null);
   useEffect(() => {
-    /*
-      Query logic
-    */
-    // console.log("kaçkere");
-    // const fetchData = async () => {
-    //   const response = await getUser(userName);
-    //   if (response?.data.user) {
-    //     // console.log(res.data.user);
-    //     setUser(response.data.user);
 
-    //     setLoading(false);
-    //   }
-    // };
-    // fetchData();
 
     getUser(userName)
       .then((res) => {
@@ -41,10 +28,6 @@ const ProfilePage = () => {
         }
       })
       .catch((err) => {
-        // console.log("neden ikikere");
-        // navigate("/", {
-        //   replace: true,
-        // });
         setLoading(false);
         toast.error("kullanıcı nulunamadı");
       });

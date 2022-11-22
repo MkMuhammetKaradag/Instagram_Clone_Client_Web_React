@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 import { discoverPostType, getDiscoverPosts } from "../../../api";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { Skeleton } from "@mui/material";
+import DiscoverPostCard from "../../../componnets/discover/DiscoverPostCard";
 
 export default function DiscoverPage() {
   const [posts, setPosts] = useState<discoverPostType[]>([]);
   const [isLoader, setIsLoader] = useState(true);
   const [skeleton, setSkeleton] = useState(true);
+
   useEffect(() => {
     getDiscoverPosts(1)
       .then((res) => {
@@ -52,29 +54,7 @@ export default function DiscoverPage() {
           }
           key={item._id}
         >
-          {item.type == "IMAGE" ? (
-            <img
-              className="object-fill w-full h-full"
-              src={item.image_url ? item.image_url : ""}
-              alt={item.description}
-            />
-          ) : (
-            <video
-              style={{
-                contain: "",
-              }}
-              className="w-full h-full object-fill"
-              src={item.video_url ? item.video_url : ""}
-            ></video>
-          )}
-          <div className="absolute flex-col  fd-sh top-0 right-0 bottom-0 left-0 w-full h-full justify-center items-center flex overflow-hidden opacity-0 hover:opacity-100 transition duration-300 ease-in-out bg-zinc-500  bg-opacity-50">
-            <span className="text-3xl font-bold text-white tracking-wider leading-relaxed font-sans">
-              likes:{item.likes.length}
-            </span>
-            <span className="text-3xl font-bold text-white tracking-wider leading-relaxed font-sans">
-              comments:{item.comments.length}
-            </span>
-          </div>
+          <DiscoverPostCard post={item}></DiscoverPostCard>
         </div>
       ))}
       {isLoader && posts.length > 0 && (

@@ -1,8 +1,19 @@
 import React, { useState } from "react";
-import {  deleteUnFollowUser, getUserType, postFollowUser } from "../../api";
+import {
+  deleteFollowRequestUser,
+  deleteUnFollowUser,
+  getUserType,
+  postFollowRequestUser,
+  postFollowUser,
+} from "../../api";
 import { FiSettings } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { removeFollowUp, setFollowUp } from "../../context/User/userSlice";
+import {
+  removeFollowUp,
+  removeMyFollowRequest,
+  setFollowUp,
+  setMyFollowRequest,
+} from "../../context/User/userSlice";
 
 type profileHeaderProps = {
   user: getUserType | null;
@@ -50,6 +61,28 @@ const Header = ({ user }: profileHeaderProps) => {
         });
     }
   };
+  const followRequestUser = () => {
+    if (user) {
+      postFollowRequestUser(user._id)
+        .then((res) => {
+          if (res.data) {
+            dispatch(setMyFollowRequest(user._id));
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+  const removeFollowRequestUser = () => {
+    if (user) {
+      deleteFollowRequestUser(user._id)
+        .then((res) => {
+          if (res.data) {
+            dispatch(removeMyFollowRequest(user._id));
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
   return (
     <div className="justify-center flex">
       <header className="flex items-center w-[60%]  gap-x-2 py-4 pb-10 ">
@@ -77,14 +110,14 @@ const Header = ({ user }: profileHeaderProps) => {
                 user?.profilePrivate ? (
                   myFollowRequests.findIndex((s) => s == user?._id) > -1 ? (
                     <button
-                      onClick={() => console.log("sa")}
+                      onClick={() => removeFollowRequestUser()}
                       className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight  rounded shadow-md hover:bg-gray-200   active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out"
                     >
                       Takip İsteği iptali
                     </button>
                   ) : (
                     <button
-                      onClick={() => console.log("sa")}
+                      onClick={() => followRequestUser()}
                       className="inline-block px-6 py-2.5 bg-gray-200 text-gray-700 font-medium text-xs leading-tight  rounded shadow-md hover:bg-gray-200   active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out"
                     >
                       Takip İsteği

@@ -117,7 +117,12 @@ const Header = () => {
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
             >
-              <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+              <Avatar
+                src={
+                  user?.userProfilePicture ||
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQjblwVQ-GlXCaTJnkev2wwBkrWAZQzUehfQ&usqp=CAU"
+                }
+              />
             </IconButton>
           </Tooltip>
           <Menu
@@ -166,9 +171,12 @@ const Header = () => {
                 Profile
               </MenuItem>
             </NavLink>
-            <MenuItem>
-              <Avatar /> My account
-            </MenuItem>
+            <NavLink to={`/account`}>
+              <MenuItem>
+                <Avatar /> My account
+              </MenuItem>
+            </NavLink>
+
             <Divider />
             <MenuItem>
               <ListItemIcon>

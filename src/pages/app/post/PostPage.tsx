@@ -3,6 +3,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useOutletContext } from "react-router-dom";
 import {
   getCommentsFromPost,
+  postComment,
   postCommentType,
   PostType_2,
   PostUserType,
@@ -11,6 +12,7 @@ import {
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { TextField } from "@mui/material";
 import EmojiPicker from "emoji-picker-react";
+import { useAppSelector } from "../../../app/hooks";
 type outletContextType = {
   userPosts?: PostType_2[];
   postPage?: {
@@ -21,6 +23,7 @@ type outletContextType = {
   };
 };
 const PostPage = () => {
+  const user = useAppSelector((s) => s.auth.user);
   const { postPage } = useOutletContext<outletContextType>();
   const [comments, setComments] = useState<postCommentType[]>([]);
   const [isLoader, setIsLoader] = useState(true);
@@ -47,6 +50,33 @@ const PostPage = () => {
         })
         .catch((err) => console.log(err));
       // }, 1500);
+    }
+  };
+  const addComment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (comment.length > 0 && postPage && user) {
+      postComment(postPage._id, { description: comment })
+        .then((res) => {
+          if (res.data.comments) {
+            if (comments.length % 10 !== 0) {
+              setComments((prev) => [
+                ...prev,
+                {
+                  _id: res.data.comments[res.data.comments.length - 1],
+                  description: comment,
+                  user: {
+                    _id: user._id,
+                    userProfilePicture: user.userProfilePicture || null,
+                    userNickName: user.userNickName,
+                  },
+                },
+              ]);
+            }
+            console.log(res.data.comments);
+            setComment("");
+          }
+        })
+        .catch((err) => console.log(err));
     }
   };
 
@@ -132,7 +162,7 @@ const PostPage = () => {
 
         <div className="flex">
           <form
-            onSubmit={() => console.log("geldi")}
+            onSubmit={(e) => addComment(e)}
             className="min-h-[44px]  max-h-[108px]   flex  items-center  w-full px-2"
           >
             {/* <button className="w-[40px] h-[42px] flex items-center  justify-center">

@@ -343,3 +343,36 @@ export const deleteUnFollowUser = async (followUserId: string) => {
 
   return data;
 };
+
+export const postFollowRequestUser = async (followUserId: string) => {
+  const { data } = await axios.post(
+    `${BASE_URL}/User/followRequestUser/${followUserId}`,
+    undefined,
+    {
+      withCredentials: true,
+    }
+  );
+
+  return data;
+};
+export const deleteFollowRequestUser = async (followUserId: string) => {
+  const { data } = await axios.delete(
+    `${BASE_URL}/User/followRequestUser/${followUserId}`,
+    {
+      withCredentials: true,
+    }
+  );
+
+  return data;
+};
+export const updateProfilePicture = async (formData: any) => {
+  const { data } = await axios.put(
+    `${BASE_URL}/User/userProfilePicture`,
+    formData,
+    {
+      withCredentials: true,
+    }
+  );
+
+  return data;
+};

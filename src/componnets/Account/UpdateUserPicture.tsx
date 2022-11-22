@@ -20,7 +20,7 @@ import { DropzoneArea } from "material-ui-dropzone";
 import DropZoneField from "../Dropzone/DropZoneField";
 import { TextField } from "@mui/material";
 import CreatableSelect from "react-select/creatable";
-import { postUserPostCreated } from "../../api";
+import { postUserPostCreated, updateProfilePicture } from "../../api";
 const steps = [
   "Resim Veya Video Seç",
   "Açıklama Etiket olutur",
@@ -44,7 +44,10 @@ type createdPostPropType = {
   userImage?: string;
   userNickName?: string;
 };
-const CreatedPost = ({ userImage, userNickName }: createdPostPropType) => {
+const UpdateUserPicture = ({
+  userImage,
+  userNickName,
+}: createdPostPropType) => {
   //   const theme = useTheme();
   //   const [activeStep, setActiveStep] = React.useState(0);
   //   const maxSteps = 3;
@@ -99,115 +102,37 @@ const CreatedPost = ({ userImage, userNickName }: createdPostPropType) => {
   };
 
   const [file, setFile] = React.useState<File>();
-  //   const [hashtags, sethashtags] = React.useState<string[]>([]);
   const [fileType, setFileType] = React.useState<string>("IMAGE");
-  const [description, setDescription] = React.useState<string>("");
-  const [inputValue, setInputValue] = React.useState("");
-  const [hashtags, setHashtags] = React.useState<readonly Option[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const createdPostSubmit = () => {
-    // console.log("file", file);
-    // console.log(
-    //   "hastag:",
-    //   hashtags.map((item) => item.label)
-    // );
-    // console.log("filetype:", file?.type.includes("video"));
-    // console.log("descriptpin:", description);
-    // console.log({
-    //   file,
-    //   hashtags: hashtags.map((item) => item.label),
-    //   type: file?.type.includes("video") ? "VIDEO" : "IMAGE",
-    //   description,
-    // });
-    if (file && description && hashtags.length > 0) {
+  const updateUserPictureSubmit = () => {
+    if (file && file?.type.includes("image")) {
       setIsLoading(true);
       const formData = new FormData();
       formData.append("file", file, file.name);
-      formData.append("image_url", "");
-      formData.append("video_url", "");
-      formData.append("description", description);
-      formData.append(
-        "hashtags",
-        hashtags.map((item) => item.label).toString()
-      );
-      formData.append("type", file?.type.includes("video") ? "VIDEO" : "IMAGE");
-
-      postUserPostCreated(formData)
+      updateProfilePicture(formData)
         .then((res) => {
-          setFile(undefined);
-          setDescription("");
-          setHashtags([]);
+          console.log("profile:", res);
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {
+          console.log(err);
+        })
         .finally(() => {
           setIsLoading(false);
         });
+      // postUserPostCreated(formData)
+      //   .then((res) => {
+      //     setFile(undefined);
+      //   })
+      //   .catch((err) => console.log(err))
+      //   .finally(() => {
+      //     setIsLoading(false);
+      //   });
     }
   };
 
-  const handleKeyDown: KeyboardEventHandler = (event) => {
-    if (!inputValue || inputValue.length < 3 || hashtags.length > 6) return;
-    switch (event.key) {
-      case "Enter":
-      case "Tab":
-        if (!hashtags.some((item) => item["label"] === inputValue)) {
-          setHashtags((prev) => [...prev, createOption(inputValue)]);
-          setInputValue("");
-          event.preventDefault();
-        }
-    }
-  };
   return (
     <div>
-      {/* <div className="border-b h-[40px] flex items-center justify-center w-full">
-        Yeni Gönderi oluştur
-      </div> */}
-      {/* <Box sx={{ flexGrow: 1 }}>
-        <MobileStepper
-          steps={maxSteps}
-          variant="text"
-          position="static"
-          activeStep={activeStep}
-          nextButton={
-            <Button
-              size="small"
-              onClick={handleNext}
-              disabled={activeStep === maxSteps - 1}
-            >
-              İleri
-            </Button>
-          }
-          backButton={
-            <button onClick={handleBack} disabled={activeStep === 0}>
-              {theme.direction === "rtl" ? (
-                <BsArrowLeft className="disabled:bg-gray-400" size={35} />
-              ) : (
-                <BsArrowLeft
-                  className={activeStep === 0 ? `text-gray-400` : ""}
-                  size={24}
-                />
-              )}
-            </button>
-          }
-        />
-        <Paper
-          square
-          elevation={0}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            height: 50,
-            pl: 2,
-            bgcolor: "background.default",
-          }}
-        >
-          <Typography>{activeStep}as</Typography>
-        </Paper>
-        <Box sx={{ height: 255, maxWidth: 400, width: "100%", p: 2 }}>
-          {activeStep}
-        </Box>
-      </Box> */}
       <Box sx={{ width: "100%" }}>
         <div className="border-b h-[40px] flex items-center justify-between w-full px-2">
           <button onClick={handleBack} disabled={activeStep === 0}>
@@ -232,52 +157,10 @@ const CreatedPost = ({ userImage, userNickName }: createdPostPropType) => {
               <DropZoneField file={file} setFile={setFile}></DropZoneField>
             )}
             {activeStep == 1 && (
-              <div className="flex flex-col mx-2  w-[300px] ">
-                <div className="my-2 flex items-center gap-x-2">
-                  <Avatar
-                    sx={{
-                      width: 35,
-                      height: 35,
-                    }}
-                    src={userImage}
-                  ></Avatar>
-                  <span>{userNickName}</span>
-                </div>
-                <TextField
-                  id="outlined-multiline-flexible"
-                  className=" outline-none  w-full px-2 placeholder:text-gray-600 text-sm  focus:placeholder:text-gray-300"
-                  multiline
-                  rows={4}
-                  maxRows={4}
-                  inputProps={{ maxLength: 200 }}
-                  placeholder="Description..!!!"
-                  value={description}
-                  variant="standard"
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-                <div className="relative mt-2">
-                  <Typography>Select Hastag: </Typography>
-                  <CreatableSelect
-                    className="h-[20px] w-full"
-                    components={components}
-                    inputValue={inputValue}
-                    isClearable
-                    isMulti
-                    menuIsOpen={false}
-                    onChange={(newValue) => setHashtags(newValue)}
-                    onInputChange={(newValue) => setInputValue(newValue)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Type something and press enter..."
-                    value={hashtags}
-                  />
-                </div>
-              </div>
-            )}
-            {activeStep == 2 && (
               <div className="flex justify-center items-center mr-2">
                 <button
                   className="py-2.5 px-5 mr-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center"
-                  onClick={createdPostSubmit}
+                  onClick={updateUserPictureSubmit}
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -316,4 +199,4 @@ const CreatedPost = ({ userImage, userNickName }: createdPostPropType) => {
   );
 };
 
-export default CreatedPost;
+export default UpdateUserPicture;

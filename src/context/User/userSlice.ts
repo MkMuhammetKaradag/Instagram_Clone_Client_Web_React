@@ -56,7 +56,7 @@ export const userSlice = createSlice({
     setMyFollowRequests: (state, action: PayloadAction<string[]>) => {
       state.myFollowRequests = action.payload;
     },
-    removeMyFollowRequests: (state, action: PayloadAction<string>) => {
+    removeMyFollowRequest: (state, action: PayloadAction<string>) => {
       let index = state.myFollowRequests.findIndex((s) => s == action.payload);
       if (index > -1) {
         state.myFollowRequests.splice(index, 1);
@@ -82,8 +82,9 @@ export const {
   setLike,
   removeLike,
   setLikes,
+  setMyFollowRequest,
   setMyFollowRequests,
-  removeMyFollowRequests,
+  removeMyFollowRequest,
   setFollowUp,
   setFollowUps,
   removeFollowUp,
